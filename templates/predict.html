@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Know Your Skin Disease{% endblock %}
+{% block content %}
+<div class="text-center">
+  <h1>Know Your Skin Disease</h1>
+  <p>Upload an image of your skin lesion for a preliminary diagnosis.</p>
+</div>
+
+{% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data" onsubmit="showLoading()">
+  <div class="mb-3">
+    <input type="file" name="image" class="form-control" accept="image/*" required>
+  </div>
+  <button type="submit" class="btn btn-primary w-100">Upload and Predict</button>
+</form>
+
+<!-- Loading Animation -->
+<div id="loading" class="text-center mt-3" style="display:none;">
+  <div class="spinner-border text-primary" role="status"></div>
+  <p>Processing... Please wait.</p>
+</div>
+
+<script>
+  function showLoading() {
+    document.getElementById("loading").style.display = "block";
+  }
+</script>
+
+{% endblock %}

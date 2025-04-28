@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+{% block title %}Prediction Result{% endblock %}
+{% block content %}
+
+<div class="container mt-5">
+  <div class="text-center">
+    <h1 class="display-5">Prediction Result</h1>
+  </div>
+
+  <div class="text-center mt-4">
+    <img src="{{ url_for('static', filename='uploads/' ~ filename) }}" 
+         class="img-fluid shadow-lg rounded" 
+         style="max-width: 60%; height: auto;" 
+         loading="lazy">
+  </div>
+
+  <div class="text-center mt-4">
+    <h3 class="fw-bold">Predicted Disease: <span class="text-primary">{{ label }}</span></h3>
+  </div>
+
+  <hr>
+
+  <!-- Information Section -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card shadow p-3 mb-3">
+        <h4 class="text-primary">Overview</h4>
+        <p>{{ disease_info.Description or "No information available." }}</p>
+      </div>
+    </div>
+    
+    <div class="col-12">
+      <div class="card shadow p-3 mb-3">
+        <h4 class="text-primary">Causes</h4>
+        <p>{{ disease_info.Causes or "No information available." }}</p>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card shadow p-3 mb-3">
+        <h4 class="text-primary">Symptoms</h4>
+        {% if disease_info.Symptoms %}
+          <ul>
+            {% for symptom in disease_info.Symptoms %}
+              <li>{{ symptom }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No information available.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card shadow p-3 mb-3">
+        <h4 class="text-primary">Treatment</h4>
+        <p>{{ disease_info.Treatment or "No information available." }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Show More Details Button -->
+  <div class="text-center mt-4">
+    <button id="toggleButton" class="btn btn-outline-primary" onclick="toggleDetails()">
+      <i class="fas fa-chevron-down"></i> Show More Details
+    </button>
+  </div>
+
+  <!-- Hidden Extra Details Section -->
+  <div id="extraDetails" style="display: none;">
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card shadow p-3 mb-3">
+          <h4 class="text-primary">Diagnosis</h4>
+          <p>{{ disease_info.Diagnosis or "No information available." }}</p>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card shadow p-3 mb-3">
+          <h4 class="text-primary">Prevention</h4>
+          {% if disease_info.Prevention %}
+            <ul>
+              {% for prevention in disease_info.Prevention %}
+                <li>{{ prevention }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>No information available.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card shadow p-3 mb-3">
+          <h4 class="text-primary">Severity Levels</h4>
+          <p>{{ disease_info['Severity Levels'] or "No information available." }}</p>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card shadow p-3 mb-3">
+          <h4 class="text-primary">Contagious</h4>
+          <p>{{ disease_info.Contagious or "No information available." }}</p>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card shadow p-3 mb-3">
+          <h4 class="text-primary">Complications</h4>
+          <p>{{ disease_info.Complications or "No information available." }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript to Toggle Extra Details -->
+  <script>
+    function toggleDetails() {
+      var extraDetails = document.getElementById("extraDetails");
+      var button = document.getElementById("toggleButton");
+      if (extraDetails.style.display === "none") {
+        extraDetails.style.display = "block";
+        button.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Details';
+      } else {
+        extraDetails.style.display = "none";
+        button.innerHTML = '<i class="fas fa-chevron-down"></i> Show More Details';
+      }
+    }
+  </script>
+
+  <!-- Disease Images Section -->
+  {% if disease_images %}
+  <div class="mt-5">
+    <h3 class="text-center">Images of {{ label }}</h3>
+    <div class="row">
+      {% for img in disease_images %}
+      <div class="col-md-3 mb-3">
+        <div class="card shadow-sm">
+          <img src="{{ url_for('static', filename='disease_images/' ~ label.replace(' ', '_') ~ '/' ~ img) }}" 
+               class="card-img-top img-fluid" alt="{{ label }}">
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="text-center mt-4">
+    <a href="{{ url_for('predict') }}" class="btn btn-lg btn-primary shadow">
+      <i class="fas fa-camera-retro"></i> Try Another Image
+    </a>
+  </div>
+
+  <!-- Disclaimer Section -->
+  <div class="alert alert-warning text-center mt-5">
+    <h5><strong>Disclaimer:</strong></h5>
+    <p>This result is for informational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment.  
+    Always consult a qualified healthcare provider for any medical concerns.</p>
+  </div>
+
+</div>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Chat Box</title>
+  <style>
+      /* Chatbox Icon */
+      #chat-icon {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          cursor: pointer;
+          background-color: #4CAF50;
+          border-radius: 50%;
+          padding: 15px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      #chat-icon img {
+          width: 30px;
+          height: 30px;
+      }
+
+      /* Chatbox Styles */
+      .chatbox {
+          display: none;
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          width: 350px;
+          height: 450px;
+          background-color: #fff;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          overflow: hidden;
+          animation: slideIn 0.3s ease-in-out;
+      }
+
+      /* Slide In Animation */
+      @keyframes slideIn {
+          0% {
+              transform: translateY(100%);
+          }
+          100% {
+              transform: translateY(0);
+          }
+      }
+
+      .chat-header {
+          background-color: #4CAF50;
+          color: white;
+          padding: 15px;
+          text-align: center;
+          font-size: 18px;
+          font-weight: bold;
+          border-radius: 10px 10px 0 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+
+      .chat-header .close-btn {
+          cursor: pointer;
+          font-size: 18px;
+      }
+
+      .chat-content {
+          padding: 15px;
+          height: 330px;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          font-size: 14px;
+          color: #333;
+      }
+
+      .chat-message {
+          background-color: #f1f1f1;
+          padding: 10px;
+          border-radius: 8px;
+          max-width: 80%;
+          align-self: flex-start;
+          word-wrap: break-word;
+      }
+
+      .button-container {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+      }
+
+      button {
+          padding: 12px;
+          font-size: 16px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
+
+      button:hover {
+          background-color: #45a049;
+      }
+
+      button:active {
+          transform: scale(0.98);
+      }
+
+      .chat-footer {
+          padding: 10px;
+          background-color: #f1f1f1;
+          text-align: center;
+          font-size: 12px;
+          color: #888;
+      }
+
+  </style>
+</head>
+<!-- 🔘 Button to open chat -->
+<button id="open-chat-btn" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; z-index: 999;">
+  Chat
+</button>
+
+<!-- 💬 Chat Box -->
+<div id="chat-box" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 350px; height: 450px; background: white; border: 1px solid #ccc; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; overflow: hidden; display: flex; flex-direction: column;">
+  
+  <!-- 🔻 Chat Header with Close -->
+  <div style="background-color: #007bff; color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+      <strong>Ask AI</strong>
+      <button id="close-chat-btn" style="background: transparent; border: none; color: white; font-size: 20px; cursor: pointer;">&times;</button>
+  </div>
+
+  <!-- 📝 Chat Body -->
+  <div id="chat-messages" style="flex: 1; padding: 10px; overflow-y: auto;"></div>
+
+  <!-- 📨 Input -->
+  <div style="display: flex; border-top: 1px solid #ccc;">
+      <input type="text" id="chat-input" placeholder="Type your question..." style="flex: 1; padding: 10px; border: none; outline: none;" />
+      <button id="send-chat-btn" style="padding: 10px; background-color: #007bff; color: white; border: none;">Send</button>
+  </div>
+</div>
+<script>
+  const chatBox = document.getElementById('chat-box');
+  const openBtn = document.getElementById('open-chat-btn');
+  const closeBtn = document.getElementById('close-chat-btn');
+  const sendBtn = document.getElementById('send-chat-btn');
+  const chatInput = document.getElementById('chat-input');
+  const chatMessages = document.getElementById('chat-messages');
+
+  openBtn.onclick = () => {
+      chatBox.style.display = 'flex';
+  };
+
+  closeBtn.onclick = () => {
+      chatBox.style.display = 'none';
+  };
+
+  sendBtn.onclick = () => {
+      const userMsg = chatInput.value.trim();
+      if (userMsg === '') return;
+
+      const userDiv = document.createElement('div');
+      userDiv.textContent = "You: " + userMsg;
+      chatMessages.appendChild(userDiv);
+
+      chatInput.value = '';
+      
+      fetch('/chat', {
+          method: 'POST',
+          body: JSON.stringify({ message: userMsg }),
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(res => res.json())
+      .then(data => {
+          const botDiv = document.createElement('div');
+          botDiv.textContent = "Medical guide: " + data.response;
+          chatMessages.appendChild(botDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+      })
+      .catch(error => {
+          const errorDiv = document.createElement('div');
+          errorDiv.textContent = "Error: Could not help this time.";
+          chatMessages.appendChild(errorDiv);
+      });
+  };
+</script>
+
+
+{% endblock %}
