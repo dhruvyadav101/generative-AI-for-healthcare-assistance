@@ -21,7 +21,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # 🔹 Hardcoded API Key
-API_KEY = "AIzaSyAxJ4Xlslb-INOcKNs4T3nwuQogGW0gpWE"
+API_KEY = "-"
 
 # Gemini API Configuration
 MODEL_NAME = "models/gemini-1.5-pro"
