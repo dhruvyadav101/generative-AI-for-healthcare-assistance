@@ -30,3 +30,6 @@ intelligent, user-friendly healthcare assistance tool.
 ![image](https://github.com/user-attachments/assets/5228ee2e-d723-4ebd-90c7-1a29c33595a8)
 ![image](https://github.com/user-attachments/assets/37944a1a-c400-41c5-943d-4fe44d6030e6)
 ![image](https://github.com/user-attachments/assets/9190b53a-1fe4-46b4-99b8-3ef99cd73f63)
+
+# PROJECT VIDEO
+https://drive.google.com/file/d/1-W-QEKAKjLxBlJ68CgA20eLjKPytME7e/view?usp=sharing
