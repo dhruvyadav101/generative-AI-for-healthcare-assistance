@@ -16,6 +16,10 @@ relevant medical information for better awareness and early intervention. The fi
 the potential of combining classification models with information generation to build an
 intelligent, user-friendly healthcare assistance tool.
 
+# MODEL PERFORMANCE COMPARISION
+
+![image](https://github.com/user-attachments/assets/b89b1a1f-b2ee-4631-94c7-84d8228d5c68)
+
 # HOME PAGE
 ![image](https://github.com/user-attachments/assets/b0cf63fb-0be9-4766-947d-10321a9cf7ed)
 
